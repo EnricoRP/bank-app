@@ -34,6 +34,20 @@ agar shorthand berfungsi, contoh membuat react arrow function cukup dengan `rafc
  📌 CSS
     🔹 tanda `--` digunakan untuk menunjukan bahwa ini adalah CCS Variabel sebagai penanda agar browser tahu kalau ini adalah CCS Variabel. Jadi CSS Variabel atau Custom Property, Selalu di awali dengan `--`.
  
+ 📌 Emmet Shorthand di VS Code untuk <div> dengan class
+    🔹 Menulis div.my-class akan menghasilkan:
+        <div class="my-class"></div>
+
+    🔹 Kamu bisa langsung menulis .my-class tanpa div, hasilnya tetap sama:
+        <div class="my-class"></div>
+
+    🔹 Untuk multiple class:
+        div.container.row → <div class="container row"></div>
+
+    🔹 Untuk menambahkan id sekaligus:
+        div#main.container → <div id="main" class="container"></div>
+
+    🔹 Tekan Tab (atau Enter tergantung setting) untuk ekspansi otomatis.
 #
 
 # 🧐 FYI Next.JS
@@ -66,5 +80,21 @@ Folder (auth) hanya digunakan untuk pengelompokan. Folder ini tidak mempengaruhi
     🔹  TypeScript adalah Type Safety jadi harus di deklarasikan Type nya.
     🔹  HeaderBoxProps Interface digunakan agar props sesuai dengan template yang telah di tetapkan.
     🔹  Keuntungan menggunakan Interface adalah kita bisa menentukan parameter tersebut optional atau tidak dengan clean code. 
+##
+
+## 3. Pembuatan TotalBalanceBox dengan AnimatedCounter
+✅ TotalBalanceBox awalnya menggunakan CountUp langsung
+    🔹 CountUp memakai useRef() yang hanya bisa dijalankan di Client Component.
+    🔹 Di Next.js (App Router), file di dalam app/ secara default adalah Server Component, sehingga muncul error:
+    🔸 "useRef only works in Client Components."
+
+✅ Solusi: Ekstrak CountUp ke dalam komponen Client bernama AnimatedCounter
+    🔹 Tambahkan "use client" di atas file AnimatedCounter.tsx untuk memastikan ini adalah Client Component.
+    🔹 AnimatedCounter bisa digunakan dengan bebas di dalam komponen Server (seperti TotalBalanceBox) karena sudah di-enkapsulasi.
+    🔹 Cara pemakaian tetap sama: <AnimatedCounter end={value} />
+✅ Keuntungan memisahkan ke AnimatedCounter
+    🔹 Tidak perlu menjadikan seluruh TotalBalanceBox sebagai Client Component.
+    🔹 Menjaga performa dan efisiensi Next.js karena hanya bagian yang butuh client yang diubah.
+    🔹 Komponen jadi lebih modular dan reusable.
 ##
 # 
