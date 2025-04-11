@@ -228,4 +228,50 @@ Folder (auth) hanya digunakan untuk pengelompokan. Folder ini tidak mempengaruhi
 
 ℹ️ Gunakan elemen semantic untuk struktur HTML yang lebih jelas, maintainable, dan SEO-friendly.
 ##
+
+## 10. Conditional Rendering dan Positioning dalam pembuatan section bank di Rigth Sidebar
+✅ {banks?.length > 0 && ()}
+    🔹 Mengecek apakah array banks ada (banks?) dan apakah jumlah elemennya lebih dari 0.
+    🔹 Kalau iya, maka elemen di bawah ini akan dirender.
+
+✅ Container utama:
+    <div className="relative flex flex-1 flex-col items-center justify-center gap-5">
+
+    | Class              | Penjelasan                                                                     |
+    |--------------------|--------------------------------------------------------------------------------|
+    | `relative`         | Dipakai agar child `absolute` bisa diposisikan relatif terhadap container ini. |
+    | `flex flex-1`      | Membuat layout flex dan mengizinkan div ini tumbuh mengisi ruang.              |
+    | `flex-col`         | Arah layout anaknya menjadi vertikal.                                          |
+    | `items-center`     | Anak-anak div disejajarkan secara horizontal ke tengah.                        |
+    | `justify-center`   | Anak-anak div disejajarkan secara vertikal ke tengah.                          |
+    | `gap-5`            | Jarak antar anak vertikal sebesar `1.25rem`.                                   |
+    | `z-10`             | Menempatkan elemen di lapisan atas.                                            |
+    | `z-0`              | Menempatkan elemen di lapisan bawah.                                           |
+    | `absolute`         | Posisi absolut terhadap parent `relative`.                                     |
+    | `right-0 top-8`    | Menempel ke sisi kanan dan turun sejauh `2rem` dari atas.                      |
+    | `w-[90%]`          | Lebar elemen adalah 90% dari elemen induknya.                                  |
+
+✅ Elemen Pertama:    
+    <div className="relative z-10">
+        BANK CARD 1
+    </div>
+
+    🔹 Elemen pertama (BANK CARD 1) akan ditampilkan dengan z-index lebih tinggi (z-10) agar berada di atas elemen lain yang memiliki z-0.    
+
+✅ Elemen Kedua:
+    {banks[1] && (
+        <div className="absolute right-0 top-8 z-0 w-[90%]">
+            BANK CARD 2
+        </div>
+    )}
+
+    | Class            | Penjelasan                                                                                     |
+    |------------------|------------------------------------------------------------------------------------------------|
+    | `absolute`       | Posisi elemen absolut terhadap container induk yang memiliki `relative`.                       |
+    | `right-0 top-8`  | Elemen diposisikan menempel ke sisi kanan (`right-0`) dan turun `2rem` dari atas (`top-8`).    |
+    | `z-0`            | Z-index lebih rendah, sehingga elemen ini berada di belakang elemen dengan `z-10`.             |
+    | `w-[90%]`        | Lebar elemen adalah 90% dari lebar container induknya.                                         |
+
+    🔹 Jika banks[1] ada (berarti paling tidak ada dua item di banks), maka render elemen kedua (BANK CARD 2).
+##
 # 
