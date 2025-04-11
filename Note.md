@@ -200,4 +200,32 @@ Folder (auth) hanya digunakan untuk pengelompokan. Folder ini tidak mempengaruhi
     🔹 Jika pakai asChild, maka Button (dari ShadCN) akan menjadi elemen utamanya—dan tetap menerima semua event/behavior dari SheetClose.
 ℹ️ Intinya: asChild = "jangan render HTML baru, cukup teruskan ke anaknya dan injeksi fungsinya."
 ##
+
+## 9. Penggunaan <aside> untuk Sidebar Kanan
+✅ <aside> adalah elemen semantic HTML5
+    🔹 Digunakan untuk konten tambahan yang terkait dengan konten utama, seperti sidebar, navigasi sekunder, atau catatan tambahan.
+    🔹 Membantu screen reader dan mesin pencari (SEO) memahami struktur halaman.
+    🔹 Lebih bermakna daripada <div> biasa karena menyampaikan maksud kontennya secara eksplisit.
+
+✅ Contoh penggunaan:
+```tsx
+    <aside className='right-sidebar'>
+    <!-- Konten sidebar -->
+    </aside>
+```
+    🔹 Ini memberitahu browser dan tools aksesibilitas bahwa ini adalah bagian samping dari halaman, seperti sidebar kanan.
+
+✅ Perbandingan elemen semantic:
+|--------------------------------------------------------------------------------------|
+| Elemen     | Kegunaan                                                                |
+|------------|-------------------------------------------------------------------------|
+| `<main>`   | Menampung konten utama dari halaman                                     |
+| `<header>` | Bagian atas halaman atau section, seperti judul atau logo               |
+| `<nav>`    | Menampung tautan navigasi (menu) utama atau sekunder                    |
+| `<aside>`  | Konten tambahan seperti sidebar, iklan, atau informasi terkait lainnya  |
+| `<footer>` | Bagian bawah halaman, biasanya untuk copyright, link tambahan, dsb.     |
+|--------------------------------------------------------------------------------------|
+
+ℹ️ Gunakan elemen semantic untuk struktur HTML yang lebih jelas, maintainable, dan SEO-friendly.
+##
 # 
