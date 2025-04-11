@@ -31,23 +31,42 @@ agar shorthand berfungsi, contoh membuat react arrow function cukup dengan `rafc
 #
 
 # 🧐 FYI
- 📌 CSS
+## CSS
+### 📌 CSS --
     🔹 tanda `--` digunakan untuk menunjukan bahwa ini adalah CCS Variabel sebagai penanda agar browser tahu kalau ini adalah CCS Variabel. Jadi CSS Variabel atau Custom Property, Selalu di awali dengan `--`.
- 
- 📌 Emmet Shorthand di VS Code untuk <div> dengan class
-    🔹 Menulis div.my-class akan menghasilkan:
-        <div class="my-class"></div>
+##
 
-    🔹 Kamu bisa langsung menulis .my-class tanpa div, hasilnya tetap sama:
-        <div class="my-class"></div>
+### 🧩 Flexbox
+    📌 1. Mengatur arah elemen anak
+        🔹  flex-row: anak-anak elemen sejajar horizontal (default)
+        🔹  flex-col: anak-anak elemen sejajar vertikal
 
-    🔹 Untuk multiple class:
-        div.container.row → <div class="container row"></div>
+    📌 2. Mengatur bagaimana elemen "mengisi ruang"
+        🔹  flex-1: elemen mengisi sisa ruang
+        🔹  flex-none: elemen tidak bisa tumbuh
 
-    🔹 Untuk menambahkan id sekaligus:
-        div#main.container → <div id="main" class="container"></div>
+    📌 3. Mengatur posisi dalam kontainer
+        🔹  justify-start | center | end | between | around → posisi horizontal
+        🔹  items-start | center | end | stretch → posisi vertikal
+###
 
-    🔹 Tekan Tab (atau Enter tergantung setting) untuk ekspansi otomatis.
+## VS Code
+### 📌 Emmet Shorthand di VS Code untuk <div> dengan class 
+        🔹 Menulis div.my-class akan menghasilkan:
+            <div class="my-class"></div>
+
+        🔹 Kamu bisa langsung menulis .my-class tanpa div, hasilnya tetap sama:
+            <div class="my-class"></div>
+
+        🔹 Untuk multiple class:
+            div.container.row → <div class="container row"></div>
+
+        🔹 Untuk menambahkan id sekaligus:
+            div#main.container → <div id="main" class="container"></div>
+
+        🔹 Tekan Tab (atau Enter tergantung setting) untuk ekspansi otomatis.
+###
+##
 #
 
 # 🧐 FYI Next.JS
@@ -96,5 +115,54 @@ Folder (auth) hanya digunakan untuk pengelompokan. Folder ini tidak mempengaruhi
     🔹 Tidak perlu menjadikan seluruh TotalBalanceBox sebagai Client Component.
     🔹 Menjaga performa dan efisiensi Next.js karena hanya bagian yang butuh client yang diubah.
     🔹 Komponen jadi lebih modular dan reusable.
+##
+
+## 4. Layouting Sidebar
+✅ <main className="flex h-screen w-full font-inter">
+    🔹 Digunakan untuk membungkus layout utama halaman (umumnya bagian sidebar + konten).
+    🔹 Elemen main ini akan membentang penuh layar baik secara tinggi maupun lebar.
+
+✅ flex
+    🔹 Mengaktifkan Flexbox, menyusun anak elemen (SIDEBAR, {children}) secara horizontal (default arah row).
+    🔹 Cocok untuk layout dua kolom: sidebar di kiri, konten di kanan.
+
+✅ h-screen
+    🔹 Menetapkan tinggi elemen sebesar tinggi viewport (100vh).
+    🔹 Membuat tampilan menyesuaikan layar penuh.
+
+✅ w-full
+    🔹 Menetapkan lebar elemen penuh (100% dari parent-nya).
+##
+
+## 📌 cn(...inputs: ClassValue[])
+✅ Fungsi cn digunakan untuk menggabungkan class Tailwind dengan cara yang dinamis dan rapi.
+    🔹 ...inputs
+      ➡️ Disebut Rest Parameter
+      ➡️ Artinya: menerima banyak argumen dan menggabungkannya jadi satu array bernama inputs
+
+    🔹 ClassValue[]
+      ➡️ Tipe dari setiap argumen di inputs, disediakan oleh library clsx
+      ➡️ Bisa berupa: 
+            • string → contoh: "p-4"
+            • object → contoh: { 'bg-red-500': isActive }
+            • false, null, undefined → akan diabaikan otomatis
+            • Array dari semua tipe di atas
+
+    🔹 clsx(inputs)
+      ➡️ Menggabungkan semua class menjadi satu string
+      ➡️ Contoh: clsx("p-2", "p-4") → "p-2 p-4"
+
+    🔹 twMerge(...)
+      ➡️ Menyelesaikan konflik class Tailwind
+      ➡️ Contoh: twMerge("p-2 p-4") → "p-4"
+
+ℹ️ cn sangat berguna saat kamu ingin memberi class secara kondisional:
+```tsx
+    cn("sidebar-link", {
+    "bg-bank-gradient": isActive,
+    })
+```
+ 
+
 ##
 # 
