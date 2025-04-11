@@ -134,7 +134,7 @@ Folder (auth) hanya digunakan untuk pengelompokan. Folder ini tidak mempengaruhi
     🔹 Menetapkan lebar elemen penuh (100% dari parent-nya).
 ##
 
-## 📌 cn(...inputs: ClassValue[])
+## 5. cn(...inputs: ClassValue[])
 ✅ Fungsi cn digunakan untuk menggabungkan class Tailwind dengan cara yang dinamis dan rapi.
     🔹 ...inputs
       ➡️ Disebut Rest Parameter
@@ -161,8 +161,43 @@ Folder (auth) hanya digunakan untuk pengelompokan. Folder ini tidak mempengaruhi
     cn("sidebar-link", {
     "bg-bank-gradient": isActive,
     })
-```
- 
+``` 
+##
 
+## 6. Penjelasan relative dan fill pada Next.js <Image />
+✅ <div className="relative size-6">
+    🔹 relative digunakan agar posisi elemen anak (child) bisa menggunakan positioning relatif terhadap parent-nya.
+    🔹 Dalam konteks ini, Image akan menggunakan parent <div> sebagai acuan karena fill membutuhkan parent yang berposisi.
+
+✅ <Image ... fill />
+    🔹 Properti fill adalah fitur dari Next.js <Image /> yang membuat gambar mengisi seluruh ukuran parent container.
+    🔹 fill akan membuat gambar menjadi absolute positioned (position: absolute; top: 0; left: 0; width: 100%; height: 100%)
+    🔹 Maka parent-nya wajib punya relative agar posisi absolut dari gambar merujuk ke dalam container tersebut.
+
+✅ Kombinasi ini sangat berguna untuk: 
+    🔹 Menempatkan gambar responsif yang bisa menyesuaikan ukuran parent-nya.
+    🔹 Digunakan dalam layout navigasi/icon seperti sidebar, avatar, thumbnail, dll.
+##
+
+## 7. DialogContent / SheetContent (ShadCN / Radix UI)
+✅ Komponen DialogContent atau SheetContent wajib memiliki:
+    🔹DialogTitle / SheetTitle → sebagai label utama
+    🔹DialogDescription / SheetDescription → sebagai deskripsi tambahan (untuk screen reader)
+
+📢 Tanpa ini, akan muncul warning seperti: 
+    `Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.`
+##
+
+## 8. <SheetClose asChild> (ShadCN / Radix UI)
+✅ asChild adalah props khusus yang menginstruksikan komponen (misalnya SheetClose) untuk tidak membuat elemen HTML sendiri, melainkan me-render elemen anaknya secara langsung.
+
+```tsx
+    <SheetClose asChild>
+        <Button variant="ghost">Tutup</Button>
+    </SheetClose>
+```
+    🔹 Jika tanpa asChild, maka SheetClose akan otomatis membuat elemen (biasanya <button>).
+    🔹 Jika pakai asChild, maka Button (dari ShadCN) akan menjadi elemen utamanya—dan tetap menerima semua event/behavior dari SheetClose.
+ℹ️ Intinya: asChild = "jangan render HTML baru, cukup teruskan ke anaknya dan injeksi fungsinya."
 ##
 # 
