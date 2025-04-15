@@ -36,6 +36,27 @@ agar shorthand berfungsi, contoh membuat react arrow function cukup dengan `rafc
     🔹 tanda `--` digunakan untuk menunjukan bahwa ini adalah CCS Variabel sebagai penanda agar browser tahu kalau ini adalah CCS Variabel. Jadi CSS Variabel atau Custom Property, Selalu di awali dengan `--`.
 ##
 
+### 📌 Positition relative & absolute
+    🔹 Misal ada meja (parent container) dan di atasnya ada 2 buku (child element):
+        -   Buku 1 (realtive) : di letakan normal di atas meja.
+        -   Buku 2 (absolute) : di tumpuk di atas buku 1, tapi posisinya diukur dari pinggir meja (bukan dari buku 1)
+        Jadi, Jika meja tidak punya posisi relative, Buku 2 akan mencari meja lain yang lebih tinggi (misal: lantai) sebagai acuan posisinya.
+
+        ```jsx
+            <div className="relative"> {/* Parent dengan `relative` */}
+                <div className="relative z-10">...</div> {/* Child 1 (normal) */}
+                <div className="absolute right-0 top-8 z-0">...</div> {/* Child 2 (absolute) */}
+            </div>
+        ```
+        Child 2 mengambil parent sebagai acuan posisi.
+        Child 1 tetap menggunakan relative karena menggunakan z-index. Jika tidak menggunakan relative z-index, posisi elemen bisa kacau. 
+
+        ℹ️ Summary
+          🔹 position: relative = penanda wilayah untuk child absolute.
+          🔹 position: absolute = elemen melayang yang posisinya di ukur dari parent relative.
+          🔹 Selalu gunakan position: relative jika ingin memakai z-index.
+##
+
 ### 🧩 Flexbox
     📌 1. Mengatur arah elemen anak
         🔹  flex-row: anak-anak elemen sejajar horizontal (default)
