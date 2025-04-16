@@ -40,8 +40,8 @@ const AuthForm = ({ type }: { type: string }) => {
         try {
             setIsLoading(true)
             if (type === 'Sign-Up') {
-                // const newUser = await signUp(data);
-                // setUser(newUser)
+                const newUser = await signUp(data);
+                setUser(newUser)
             } else if (type === 'Sign-Up') {
                 const response = await signIn({
                     email: data.email,
