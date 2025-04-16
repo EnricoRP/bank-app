@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { HTMLInputTypeAttribute } from 'react'
 import {
     FormField,
     FormControl,
@@ -7,13 +7,23 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Control, FieldPath } from 'react-hook-form'
+import { AuthFormSchema } from '@/lib/utils'
+import { z } from 'zod'
 
+interface CustomInput {
+    control: Control<z.infer<typeof AuthFormSchema>>,
+    name: FieldPath<z.infer<typeof AuthFormSchema>>,
+    label: string,
+    placeHolder: string,
+    type?: HTMLInputTypeAttribute
+}
 
-const CustomInput = ({ form, name, label, placeHolder, type }:
-    { form: any, name: string, label: string, placeHolder: string, type: string }) => {
+const CustomInput = ({ control, name, label, placeHolder }:
+    CustomInput) => {
     return (
         <FormField
-            control={form.control}
+            control={control}
             name={name}
             render={({ field }) => (
                 <div className="form-item">
@@ -22,8 +32,9 @@ const CustomInput = ({ form, name, label, placeHolder, type }:
                     </FormLabel>
                     <div className="flex flex-col w-full">
                         <FormControl>
-                            <Input
-                                type={type}
+                            <Input 
+                                id={name}
+                                type={name === 'password' ? 'password': 'text'}
                                 placeholder={placeHolder}
                                 {...field}></Input>
                         </FormControl>

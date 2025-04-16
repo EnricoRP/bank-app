@@ -238,14 +238,14 @@ Folder (auth) hanya digunakan untuk pengelompokan. Folder ini tidak mempengaruhi
 
 ✅ Perbandingan elemen semantic:
 |--------------------------------------------------------------------------------------|
-| Elemen     | Kegunaan                                                                |
-|------------|-------------------------------------------------------------------------|
-| `<main>`   | Menampung konten utama dari halaman                                     |
-| `<header>` | Bagian atas halaman atau section, seperti judul atau logo               |
-| `<nav>`    | Menampung tautan navigasi (menu) utama atau sekunder                    |
-| `<aside>`  | Konten tambahan seperti sidebar, iklan, atau informasi terkait lainnya  |
-| `<footer>` | Bagian bawah halaman, biasanya untuk copyright, link tambahan, dsb.     |
-|--------------------------------------------------------------------------------------|
+| Elemen                                                                                 | Kegunaan                                                               |
+| -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `<main>`                                                                               | Menampung konten utama dari halaman                                    |
+| `<header>`                                                                             | Bagian atas halaman atau section, seperti judul atau logo              |
+| `<nav>`                                                                                | Menampung tautan navigasi (menu) utama atau sekunder                   |
+| `<aside>`                                                                              | Konten tambahan seperti sidebar, iklan, atau informasi terkait lainnya |
+| `<footer>`                                                                             | Bagian bawah halaman, biasanya untuk copyright, link tambahan, dsb.    |
+| -------------------------------------------------------------------------------------- |
 
 ℹ️ Gunakan elemen semantic untuk struktur HTML yang lebih jelas, maintainable, dan SEO-friendly.
 ##
@@ -258,19 +258,19 @@ Folder (auth) hanya digunakan untuk pengelompokan. Folder ini tidak mempengaruhi
 ✅ Container utama:
     <div className="relative flex flex-1 flex-col items-center justify-center gap-5">
 
-    | Class              | Penjelasan                                                                     |
-    |--------------------|--------------------------------------------------------------------------------|
-    | `relative`         | Dipakai agar child `absolute` bisa diposisikan relatif terhadap container ini. |
-    | `flex flex-1`      | Membuat layout flex dan mengizinkan div ini tumbuh mengisi ruang.              |
-    | `flex-col`         | Arah layout anaknya menjadi vertikal.                                          |
-    | `items-center`     | Anak-anak div disejajarkan secara horizontal ke tengah.                        |
-    | `justify-center`   | Anak-anak div disejajarkan secara vertikal ke tengah.                          |
-    | `gap-5`            | Jarak antar anak vertikal sebesar `1.25rem`.                                   |
-    | `z-10`             | Menempatkan elemen di lapisan atas.                                            |
-    | `z-0`              | Menempatkan elemen di lapisan bawah.                                           |
-    | `absolute`         | Posisi absolut terhadap parent `relative`.                                     |
-    | `right-0 top-8`    | Menempel ke sisi kanan dan turun sejauh `2rem` dari atas.                      |
-    | `w-[90%]`          | Lebar elemen adalah 90% dari elemen induknya.                                  |
+    | Class            | Penjelasan                                                                     |
+    | ---------------- | ------------------------------------------------------------------------------ |
+    | `relative`       | Dipakai agar child `absolute` bisa diposisikan relatif terhadap container ini. |
+    | `flex flex-1`    | Membuat layout flex dan mengizinkan div ini tumbuh mengisi ruang.              |
+    | `flex-col`       | Arah layout anaknya menjadi vertikal.                                          |
+    | `items-center`   | Anak-anak div disejajarkan secara horizontal ke tengah.                        |
+    | `justify-center` | Anak-anak div disejajarkan secara vertikal ke tengah.                          |
+    | `gap-5`          | Jarak antar anak vertikal sebesar `1.25rem`.                                   |
+    | `z-10`           | Menempatkan elemen di lapisan atas.                                            |
+    | `z-0`            | Menempatkan elemen di lapisan bawah.                                           |
+    | `absolute`       | Posisi absolut terhadap parent `relative`.                                     |
+    | `right-0 top-8`  | Menempel ke sisi kanan dan turun sejauh `2rem` dari atas.                      |
+    | `w-[90%]`        | Lebar elemen adalah 90% dari elemen induknya.                                  |
 
 ✅ Elemen Pertama:    
     <div className="relative z-10">
@@ -286,13 +286,28 @@ Folder (auth) hanya digunakan untuk pengelompokan. Folder ini tidak mempengaruhi
         </div>
     )}
 
-    | Class            | Penjelasan                                                                                     |
-    |------------------|------------------------------------------------------------------------------------------------|
-    | `absolute`       | Posisi elemen absolut terhadap container induk yang memiliki `relative`.                       |
-    | `right-0 top-8`  | Elemen diposisikan menempel ke sisi kanan (`right-0`) dan turun `2rem` dari atas (`top-8`).    |
-    | `z-0`            | Z-index lebih rendah, sehingga elemen ini berada di belakang elemen dengan `z-10`.             |
-    | `w-[90%]`        | Lebar elemen adalah 90% dari lebar container induknya.                                         |
+    | Class           | Penjelasan                                                                                  |
+    | --------------- | ------------------------------------------------------------------------------------------- |
+    | `absolute`      | Posisi elemen absolut terhadap container induk yang memiliki `relative`.                    |
+    | `right-0 top-8` | Elemen diposisikan menempel ke sisi kanan (`right-0`) dan turun `2rem` dari atas (`top-8`). |
+    | `z-0`           | Z-index lebih rendah, sehingga elemen ini berada di belakang elemen dengan `z-10`.          |
+    | `w-[90%]`       | Lebar elemen adalah 90% dari lebar container induknya.                                      |
 
     🔹 Jika banks[1] ada (berarti paling tidak ada dua item di banks), maka render elemen kedua (BANK CARD 2).
+##
+
+## 11. Pembuatan halaman Sign Up & Sign In menggunakan shadcn form
+✅ AuthFormSchema 
+Schema ini taruh di utils agar dapat digunakan di banyak file ( Authform.tsx & CustomInput) karena berisi konfigurasi validasi input untu form schema.
+
+Disisi lain, AuthFormSchema juga di gunakan pada CustomInput.tsx :
+🔹  `control: Control<z.infer<typeof AuthFormSchema>>`
+`Control<T>` adalah generic dari `react-hook-form` yang mengontrol seluruh form berdasarkan T yang di berikan. Sementara `z.infer<typeof AuthFormSchema>` akan mengekstrak tipe TypeScript dari Zod schema AuthFormSchema.
+
+🔹  `name: FieldPath<z.infer<typeof AuthFormSchema>>`
+`FieldPath<T>` juga generic dari `react-hook-form` yang akan membatasi nama field hanya pada key dari object harsil infer Zod. Sehingga kesalahan value dapat di minimalisir.
+
+🔹 `interface CustomInput`
+Hal ini digunakan untuk tujuan type safety, Sehingga control dan name akan otomatis menyesuaikan dengan AuthFormSchema.
 ##
 # 
