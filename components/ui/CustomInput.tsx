@@ -1,4 +1,3 @@
-'use client'
 import React, { HTMLInputTypeAttribute } from 'react'
 import {
     FormField,
