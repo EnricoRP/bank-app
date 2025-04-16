@@ -196,15 +196,16 @@ export const getTransactionStatus = (date: Date) => {
 };
 
 export const AuthFormSchema = (type: string) => z.object({
-  email: z.string().email({ message: 'Invalid email format' }),
-  password: z.string()
-      .min(6, { message: 'Passowrd must be at least 6 characters long' })
-      .max(50, { message: 'Password must be at mos 50 charaters long' }),
   firstName: type === 'Sign-In' ? z.string().optional() : z.string().min(3).max(50),
   lastName: type === 'Sign-In' ? z.string().optional() : z.string().min(3).max(50),
+  city: type === 'Sign-In' ? z.string().optional() : z.string().min(3).max(50),
   address: type === 'Sign-In' ? z.string().optional() : z.string().min(3).max(50),
   state: type === 'Sign-In' ? z.string().optional() : z.string().min(3).max(50),
   postalCode: type === 'Sign-In' ? z.string().optional() : z.string().min(3).max(50),
   dateOfBirth: type === 'Sign-In' ? z.string().optional() : z.string().min(3).max(50),
   ssn: type === 'Sign-In' ? z.string().optional() : z.string().min(3).max(50),    
+  email: z.string().email({ message: 'Invalid email format' }),
+  password: z.string()
+      .min(6, { message: 'Passowrd must be at least 6 characters long' })
+      .max(50, { message: 'Password must be at mos 50 charaters long' })
 });
