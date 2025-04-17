@@ -16,10 +16,11 @@ interface CustomInput {
     name: FieldPath<z.infer<typeof formSchema>>,
     label: string,
     placeHolder: string,
-    type?: HTMLInputTypeAttribute
+    type?: HTMLInputTypeAttribute,
+    autoComplete?: string
 }
 
-const CustomInput = ({ control, name, label, placeHolder }:
+const CustomInput = ({ control, name, label, placeHolder, autoComplete = '' }:
     CustomInput) => {
     return (
         <FormField
@@ -27,16 +28,19 @@ const CustomInput = ({ control, name, label, placeHolder }:
             name={name}
             render={({ field }) => (
                 <div className="form-item">
-                    <FormLabel className='form-label'>
+                    <FormLabel htmlFor={name} className='form-label' >
                         {label}
                     </FormLabel>
                     <div className="flex flex-col w-full">
                         <FormControl>
-                            <Input 
+                            <Input
                                 id={name}
-                                type={name === 'password' ? 'password': 'text'}
+                                autoComplete={autoComplete === '' ? name : autoComplete}
+                                type={name === 'password' ? 'password' : 'text'}
                                 placeholder={placeHolder}
-                                {...field}></Input>
+                                {...field}>
+                            </Input>
+
                         </FormControl>
                         <FormMessage className='form-message' />
                     </div>
