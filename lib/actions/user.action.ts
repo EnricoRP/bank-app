@@ -49,6 +49,6 @@ export const logoutAccount = async () => {
         cookies().delete('appwrite-session');
         await account.deleteSession('current');
     } catch (error) {
-        
+        return null
     }
 }
