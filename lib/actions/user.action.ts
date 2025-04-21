@@ -92,9 +92,7 @@ export const logoutAccount = async () => {
 
 export const createLinkToken = async (user: User) => {
     try {
-        const tokenParams = {
-            client_id: process.env.PLAID_CLIENT_ID,
-            secret: process.env.PLAID_SECRET,
+        const tokenParams = { 
             user: {
                 client_user_id: user.$id
             },
@@ -104,7 +102,6 @@ export const createLinkToken = async (user: User) => {
             country_codes: ['US'] as CountryCode[],
         }
         const response = await plaidClient.linkTokenCreate(tokenParams);
-        console.log(response.data.link_token);
         return parseStringify({ linkToken: response.data.link_token });
     } catch (error) {
         console.error(error);
@@ -117,7 +114,7 @@ export const createBankAccount = async ({
     accountId,
     accessToken,
     fundingSourceUrl,
-    sharableId
+    shareableId
 }: createBankAccountProps) => {
     try {
         const { database } = await createAdminClient();
@@ -131,7 +128,7 @@ export const createBankAccount = async ({
                 accountId,
                 accessToken,
                 fundingSourceUrl,
-                sharableId,
+                shareableId,
             }
         );
 
@@ -143,7 +140,7 @@ export const createBankAccount = async ({
 
 export const exchangePublicToken = async ({ publicToken, user }: exchangePublicTokenProps) => {
     try {
-        const response = await plaidClient.itemPublicTokenExchange({
+        const response = await plaidClient.itemPublicTokenExchange({ 
             public_token: publicToken
         });
         const accessToken = response.data.access_token;
@@ -178,7 +175,7 @@ export const exchangePublicToken = async ({ publicToken, user }: exchangePublicT
             accountId: accountData.account_id,
             accessToken,
             fundingSourceUrl,
-            sharableId: encryptId(accountData.account_id)
+            shareableId: encryptId(accountData.account_id)
         });
 
         // Revalidate the path to reflect the changes
