@@ -2,8 +2,11 @@
 import { ID } from 'node-appwrite';
 import { createSessionClient, createAdminClient } from '../server/appwrite';
 import { cookies } from 'next/headers';
-import { parseStringify } from '../utils';
+import { encryptId, parseStringify } from '../utils';
 import { parse } from 'path';
+import { CountryCode, ProcessorTokenCreateRequest, ProcessorTokenCreateRequestProcessorEnum, Products } from 'plaid';
+import { plaidClient } from './plaid';
+import { revalidatePath } from 'next/cache';
 export const signIn = async ({ email, password }: signInProps) => {
     try {
         const { account } = await createAdminClient();
@@ -37,7 +40,7 @@ export async function getLoggedInUser() {
     try {
         const { account } = await createSessionClient();
         const user = await account.get();
-        return parseStringify(user); 
+        return parseStringify(user);
     } catch (error) {
         return null;
     }
@@ -45,10 +48,78 @@ export async function getLoggedInUser() {
 
 export const logoutAccount = async () => {
     try {
-        const {account} = await createSessionClient();
+        const { account } = await createSessionClient();
         cookies().delete('appwrite-session');
         await account.deleteSession('current');
     } catch (error) {
         return null
+    }
+}
+
+export const createLinkToken = async (user: User) => {
+    try {
+        const tokenParams = {
+            user: {
+                client_user_id: user.$id
+            },
+            client_name: user.name,
+            Products: ['auth'] as Products[],
+            language: 'en',
+            country_codes: ['US'] as CountryCode[],
+        }
+        const response = await plaidClient.linkTokenCreate(tokenParams);
+        return parseStringify({ linkToken: response.data.link_token });
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export const exchangePublicToken = async ({ publicToken, user }: exchangePublicTokenProps) => {
+    try {
+        const response = await plaidClient.itemPublicTokenExchange({
+            public_token: publicToken
+        });
+        const accessToken = response.data.access_token;
+        const itemId = response.data.item_id;
+        const accountsResponse = await plaidClient.accountsGet({
+            access_token: accessToken
+        });
+        const accountData = accountsResponse.data.accounts[0];
+
+        // Create a processor token for Dwolla use the access token and acount ID
+        const request: ProcessorTokenCreateRequest = {
+            access_token: accessToken,
+            account_id: accountData.account_id,
+            processor: "dwolla" as ProcessorTokenCreateRequestProcessorEnum,
+        };
+        const processorTokenResponse = await plaidClient.processorTokenCreate(request);
+        const processorToken = processorTokenResponse.data.processor_token;
+
+        // Create a funding source URL for the account using the Dwolla customer ID, Processeor token, and bank name.
+        const fundingSourceUrl = await addFundingSource({
+            dwollaCustomerId: user.dwollaCustomerId,
+            processorToken,
+            bankName: accountData.name
+        });
+
+        if (!fundingSourceUrl) throw new Error("Funding source not found!");
+
+        // Create a bank account using the user ID, item ID, account ID, access token, funding source URL, and sharable ID
+        await createBankAccount({
+            userId: user.$id,
+            bankId: itemId,
+            accountId: accountData.account_id,
+            accessToken,
+            fundingSourceUrl,
+            sharableId: encryptId(accountData.account_id)
+        });
+
+        // Revalidate the path to reflect the changes
+        revalidatePath("/");
+
+        return parseStringify({ publicTokenExchange: 'complete' })
+
+    } catch (error) {
+        console.error(error);
     }
 }
