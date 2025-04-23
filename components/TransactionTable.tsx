@@ -2,15 +2,29 @@ import React from 'react'
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { formatAmount, formatDateTime, getTransactionStatus, removeSpecialCharacters } from '@/lib/utils'
+import { cn, formatAmount, formatDateTime, getTransactionStatus, removeSpecialCharacters } from '@/lib/utils'
+import { transactionCategoryStyles } from '@/constants'
 
-
+const CategoryBadge = ({ category }: CategoryBadgeProps) => {
+  const {
+    borderColor,
+    backgroundColor,
+    textColor,
+    chipBackgroundColor, } = transactionCategoryStyles[category as keyof typeof transactionCategoryStyles] || transactionCategoryStyles.default;
+  return (
+    <div className={cn('category-badge', borderColor, chipBackgroundColor)}>
+      <div className={cn('size-2 rounded-full', backgroundColor)} />
+        <p className={cn('text-[12px] font-medium', textColor)}>
+          {category}
+        </p> 
+    </div> 
+  )
+}
 const TransactionTable = ({ transactions }: TransactionTableProps) => {
   return (
     <Table>
@@ -46,7 +60,7 @@ const TransactionTable = ({ transactions }: TransactionTableProps) => {
               </TableCell>
 
               <TableCell className='pl-2 pr-10'>
-                {status}
+                <CategoryBadge category={status} />
               </TableCell>
 
               <TableCell className='min-w-32 pl-2 pr-10'>
@@ -58,8 +72,8 @@ const TransactionTable = ({ transactions }: TransactionTableProps) => {
               </TableCell>
 
               <TableCell className='pl-2 pr-10 max-md:hidden'>
-                {transaction.category}
-              </TableCell> 
+                <CategoryBadge category={transaction.category} />
+              </TableCell>
             </TableRow>
           )
         })}

@@ -34,7 +34,7 @@ const RecentTransactions = ({ accounts, transactions, appwriteItemId, page }: Re
                         <BankInfo
                             account={account}
                             appwriteItemId={appwriteItemId}
-                            type="card"
+                            type="full"
                         />
 
                         <TransactionTable transactions={transactions} />
