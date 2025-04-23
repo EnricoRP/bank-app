@@ -32,35 +32,34 @@ const TransactionTable = ({ transactions }: TransactionTableProps) => {
           const isCredit = transaction.type === 'credit';
 
           return (
-            <TableRow key={transaction.id} >
-              <TableCell>
-                <div>
-                  <h1>
+            <TableRow key={transaction.id} className={`${isDebit || amount[0] === '-' ? 'bg-[#FFFBFA]' : 'bg-[#F6FEF9]'} !over:bg-none !border-b-DEFAULT`}>
+              <TableCell className='max-w-[250px] pl-2 pr-10'>
+                <div className='flex item-center gap-3'>
+                  <h1 className='text-14 truncate font-semibold text-[#344054]'>
                     {removeSpecialCharacters(transaction.name)}
                   </h1>
                 </div>
               </TableCell>
 
-              <TableCell>
+              <TableCell className={`pl-2 pr-10 font-semibold ${isDebit || amount[0] === '-' ? 'text-[#f04438]' : 'text-[#039855]'}`}>
                 {isDebit ? `-${amount}` : isCredit ? amount : amount}
               </TableCell>
 
-              <TableCell>
+              <TableCell className='pl-2 pr-10'>
                 {status}
               </TableCell>
 
-              <TableCell>
+              <TableCell className='min-w-32 pl-2 pr-10'>
                 {formatDateTime(new Date(transaction.date)).dateTime}
               </TableCell>
 
-              <TableCell>
+              <TableCell className='pl-2 pr-10 capitalize min-w-24'>
                 {transaction.paymentChannel}
               </TableCell>
 
-              <TableCell  >
+              <TableCell className='pl-2 pr-10 max-md:hidden'>
                 {transaction.category}
-              </TableCell>
-
+              </TableCell> 
             </TableRow>
           )
         })}
