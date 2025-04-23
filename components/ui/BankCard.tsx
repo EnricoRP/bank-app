@@ -58,7 +58,7 @@ const BankCard = ({ account, userName, showBalance = true }: CreditCardProps) =>
                     />
                 </div>
             </Link>
-            { showBalance && <Copy title={account?.sharableId} /> }
+            { showBalance && <Copy title={account?.shareableId} /> }
         </div>
     )
 }

@@ -18,7 +18,7 @@ import { plaidClient } from "../plaid";
 export const getAccounts = async ({ userId }: getAccountsProps) => {
   try {
     // get banks from db
-    const banks = await getBanks({ userId });
+    const banks = await getBanks({ userId }); 
 
     const accounts = await Promise.all(
       banks?.map(async (bank: Bank) => {
@@ -44,7 +44,7 @@ export const getAccounts = async ({ userId }: getAccountsProps) => {
           type: accountData.type as string,
           subtype: accountData.subtype! as string,
           appwriteItemId: bank.$id,
-          shareableId: bank.sharableId,
+          shareableId: bank.shareableId,
         };
 
         return account;
