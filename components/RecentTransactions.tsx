@@ -3,6 +3,7 @@ import React from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BankTabItem } from './BankTabItem'
 import BankInfo from './BankInfo'
+import TransactionTable from './TransactionTable'
 
 const RecentTransactions = ({ accounts, transactions, appwriteItemId, page }: RecentTransactionsProps) => {
     return (
@@ -11,6 +12,7 @@ const RecentTransactions = ({ accounts, transactions, appwriteItemId, page }: Re
             <header className="flex items-center justify-between">
                 <h2 className='recent-transactions-label'>Recent Transactions</h2>
                 <Link href={`/transactions-history/?id=${appwriteItemId}?page=${page}`} className="view-all-btn">
+                    View All
                 </Link>
             </header>
             <Tabs defaultValue={appwriteItemId} className="w-full">
@@ -34,6 +36,8 @@ const RecentTransactions = ({ accounts, transactions, appwriteItemId, page }: Re
                             appwriteItemId={appwriteItemId}
                             type="card"
                         />
+
+                        <TransactionTable transactions={transactions} />
                     </TabsContent>
                 )))}
             </Tabs>
