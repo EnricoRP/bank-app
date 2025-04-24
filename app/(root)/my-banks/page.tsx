@@ -26,7 +26,7 @@ const MyBanks = async() => {
             <BankCard 
               key={accounts.$id}
               account={a}
-              userName={looggedIn?.name}
+              userName={looggedIn?.firstName}
             />
           ))}
         </div>
