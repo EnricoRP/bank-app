@@ -12,7 +12,7 @@ const RecentTransactions = ({ accounts, transactions, appwriteItemId, page }: Re
 
     const indexOfLastTransaction = page * rowsPerPage;
     const indexOfFirstTransaction = indexOfLastTransaction - rowsPerPage;
-    const currentTransaction =  transactions.slice(indexOfFirstTransaction, indexOfLastTransaction);
+    const currentTransaction = transactions.slice(indexOfFirstTransaction, indexOfLastTransaction);
     return (
         <section className="recent-transactions">
 
@@ -45,7 +45,12 @@ const RecentTransactions = ({ accounts, transactions, appwriteItemId, page }: Re
                         />
 
                         <TransactionTable transactions={currentTransaction} />
-                        <Pagination page={page} totalPages={totalPages}/>
+
+                        {totalPages > 1 && (
+                            <div className="my-4 w-full">
+                                <Pagination page={page} totalPages={totalPages} />
+                            </div>
+                        )}
                     </TabsContent>
                 )))}
             </Tabs>
