@@ -246,7 +246,7 @@ export const getBankByAccountId = async({ accountId }: getBankByAccountIdProps) 
             BANK_COLLECTION!,
             [Query.equal('accountId', [accountId])]
         )
-        return parseStringify(bank.documents)
+        return parseStringify(bank.documents[0])
     } catch (error) {
         console.error(error);
     }
