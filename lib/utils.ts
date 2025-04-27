@@ -1,8 +1,11 @@
 /* eslint-disable no-prototype-builtins */
 import { type ClassValue, clsx } from "clsx";
-import qs from "query-string"; 
+import qs from "query-string";
 import { twMerge } from "tailwind-merge";
-import { z } from "zod" 
+import { z } from "zod"
+import { getLoggedInUser } from "./actions/user.actions";
+import { redirect } from "next/navigation";
+import { getAccounts } from "./actions/bank.actions";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -203,9 +206,45 @@ export const AuthFormSchema = (type: string) => z.object({
   state: type === 'Sign-In' ? z.string().optional() : z.string().min(2).max(50),
   postalCode: type === 'Sign-In' ? z.string().optional() : z.string().min(3).max(50),
   dateOfBirth: type === 'Sign-In' ? z.string().optional() : z.string().min(3).max(50),
-  ssn: type === 'Sign-In' ? z.string().optional() : z.string().min(3).max(50),    
+  ssn: type === 'Sign-In' ? z.string().optional() : z.string().min(3).max(50),
   email: z.string().email({ message: 'Invalid email format' }),
   password: z.string()
-      .min(6, { message: 'Passowrd must be at least 6 characters long' })
-      .max(50, { message: 'Password must be at mos 50 charaters long' })
+    .min(6, { message: 'Passowrd must be at least 6 characters long' })
+    .max(50, { message: 'Password must be at mos 50 charaters long' })
 });
+
+export async function withAuthPage<T>(handler: (user: any) => Promise<T>): Promise<T | null> {
+  const loggedIn = await getLoggedInUser();
+
+  if (!loggedIn) {
+    redirect('/sign-in');
+    return null; // to make sure this server function stoped
+  }
+
+  return handler(loggedIn);
+}
+
+export async function withAuthPageForAccount<T>(handler: (loggedIn:any, accounts: any) => Promise<T>): Promise<T | null> {
+  try {
+    const loggedIn = await getLoggedInUser();
+
+    if (!loggedIn) {
+      redirect('/sign-in');
+      return null; // to make sure this server function stoped
+    }
+    const accounts = await getAccounts({
+      userId: loggedIn.$id
+    });
+
+    if (!accounts) {
+      console.error('This Account doesnt have any connection to Plaid');
+      redirect('/error');
+      return null;
+    }
+
+    return handler(loggedIn, accounts);
+  } catch (error) {
+    console.error('Error while checking authentication or fetching account:', error);
+    redirect('/error');
+  }
+}
