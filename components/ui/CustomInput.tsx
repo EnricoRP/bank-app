@@ -17,10 +17,11 @@ interface CustomInput {
     label: string,
     placeHolder: string,
     type?: HTMLInputTypeAttribute,
-    autoComplete?: string
+    autoComplete?: string,
+    onChange?: (value: string) => void
 }
 
-const CustomInput = ({ control, name, label, placeHolder, autoComplete = '' }:
+const CustomInput = ({ control, name, label, placeHolder, autoComplete = '', onChange }:
     CustomInput) => {
     return (
         <FormField
@@ -38,9 +39,14 @@ const CustomInput = ({ control, name, label, placeHolder, autoComplete = '' }:
                                 autoComplete={autoComplete === '' ? name : autoComplete}
                                 type={name === 'password' ? 'password' : 'text'}
                                 placeholder={placeHolder}
-                                {...field}>
+                                {...field}
+                                onChange={(e) => {
+                                    field.onChange(e);
+                                    if (onChange) {
+                                        onChange(e.target.value);
+                                    }
+                                }}>
                             </Input>
-
                         </FormControl>
                         <FormMessage className='form-message' />
                     </div>
