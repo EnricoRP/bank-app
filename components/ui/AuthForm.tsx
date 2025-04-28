@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -17,15 +17,19 @@ import {
 } from "@/components/ui/form"
 import CustomInput from './CustomInput'
 import { AuthFormSchema } from '@/lib/utils'
-import { Loader2 } from 'lucide-react'
+import { AlertCircle, Loader2, Terminal } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { getLoggedInUser, signIn, signUp } from '@/lib/actions/user.actions'
 import PlaidLink from '../PlaidLink'
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 const AuthForm = ({ type }: { type: string }) => {
+
     const router = useRouter()
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [isVisible, setIsVisible] = useState(false);
     const formSchema = AuthFormSchema(type);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -67,7 +71,11 @@ const AuthForm = ({ type }: { type: string }) => {
                     email: data.email,
                     password: data.password
                 });
-                if (response) router.push('/');
+                if (response && response.success) {
+                    router.push('/');
+                } else {
+                    setErrorMessage(response?.message || 'Login failed.');
+                }
             }
         } catch (error) {
             console.log(error);
@@ -76,6 +84,23 @@ const AuthForm = ({ type }: { type: string }) => {
         }
     }
 
+    useEffect(() => {
+        if (errorMessage) {
+            setIsVisible(true); // Tampilkan
+            const timer = setTimeout(() => {
+                setIsVisible(false); // Mulai hide (ubah opacity 0)
+                setTimeout(() => {
+                    setErrorMessage(null); // Setelah animasi selesai, hapus error
+                }, 500); // Tunggu 0.5 detik supaya animasi selesai dulu
+            }, 10000); // Error muncul selama 5 detik
+
+            return () => clearTimeout(timer);
+        }
+    }, [errorMessage]);
+
+    const handleInput = () => {
+        setErrorMessage(null);
+    }
     return (
         <section className="auth-form">
             <header className="flex flex-col gap-5 md:gap-8">
@@ -178,14 +203,31 @@ const AuthForm = ({ type }: { type: string }) => {
                                 name='email'
                                 label='Email'
                                 placeHolder='Enter your email'
+                                onChange={handleInput}
                             />
-                            <CustomInput
-                                control={form.control}
-                                name='password'
-                                label='Password'
-                                placeHolder='Enter your password'
-                            />
-                            <div className="flex flex-col gap-4">
+                            <div className="relative">
+                                <CustomInput
+                                    control={form.control}
+                                    name='password'
+                                    label='Password'
+                                    placeHolder='Enter your password'
+                                    onChange={handleInput}
+                                />
+                                {errorMessage && (
+                                    <div className="absolute left-0 right-0 top-full mt-2">
+                                        <Alert variant="destructive" className="p-2 transition-opacity duration-500 ease-in-out">
+                                            <div className="flex items-center gap-2">
+                                                <AlertCircle className="h-4 w-4 text-red-600" />
+                                                <AlertDescription className="!text-10 text-red-600">
+                                                    {errorMessage}
+                                                </AlertDescription>
+                                            </div>
+                                        </Alert>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="flex flex-col gap-4 pt-5">
                                 <Button className='form-btn' type="submit" disabled={isLoading}>
                                     {isLoading ? (
                                         <>
@@ -196,7 +238,6 @@ const AuthForm = ({ type }: { type: string }) => {
                                         </>
                                     ) : type === 'Sign-In' ? 'Sign In' : 'Sign Up'}
                                 </Button>
-
                             </div>
                             <footer className="flex justify-center gap-1">
                                 <p className="text-14 font-normal text-gray-600">
@@ -210,8 +251,9 @@ const AuthForm = ({ type }: { type: string }) => {
                         </form>
                     </Form>
                 </>
-            )}
-        </section>
+            )
+            }
+        </section >
     )
 }
 
