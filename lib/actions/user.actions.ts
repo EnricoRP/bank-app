@@ -7,7 +7,7 @@ import { parse } from 'path';
 import { CountryCode, ProcessorTokenCreateRequest, ProcessorTokenCreateRequestProcessorEnum, Products } from 'plaid';
 import { plaidClient } from '../plaid';
 import { revalidatePath } from 'next/cache';
-import { createDwollaCustomer, addFundingSource } from './dwolla.actions';
+import { createDwollaCustomer, addFundingSource, deactivateDwollaCustomer } from './dwolla.actions';
 
 const {
     APPWRITE_DATABASE_ID: DATABASE_ID,
@@ -43,19 +43,26 @@ export const signIn = async ({ email, password }: signInProps) => {
         const user = await getUserInfo({ userId: session.userId });
         return parseStringify(user);
     } catch (error) {
-        console.error('error', error)
+        if (error instanceof Error) {
+            console.error("signIn error:", error.message);
+            return { success: false, message: error.message };
+        } else {
+            console.error("signIn error:", error);
+            return { success: false, message: "An unknown error occurred during sign-in." };
+        }
     }
 }
 
 export const signUp = async ({ password, ...userData }: SignUpParams) => {
     const { email, firstName, lastName } = userData;
     let newUserAccount;
+    let dwollaCustomerId;
     try {
         const { account, database } = await createAdminClient();
-
         newUserAccount = await account.create(ID.unique(), userData.email, password, `${userData.firstName} ${userData.lastName}`);
-
-        if (!newUserAccount) throw new Error(' error creating user');
+        if (!newUserAccount) {
+            throw new Error(' error creating user');
+        }
 
         const dwollaCustomerUrl = await createDwollaCustomer({
             ...userData,
@@ -63,7 +70,7 @@ export const signUp = async ({ password, ...userData }: SignUpParams) => {
         });
 
         if (!dwollaCustomerUrl) throw new Error(' error creating Dwolla customer');
-        const dwollaCustomerId = extractCustomerIdFromUrl(dwollaCustomerUrl);
+        dwollaCustomerId = extractCustomerIdFromUrl(dwollaCustomerUrl);
 
         const newUser = await database.createDocument(
             DATABASE_ID!,
@@ -89,6 +96,18 @@ export const signUp = async ({ password, ...userData }: SignUpParams) => {
         return parseStringify(newUser);
     } catch (error) {
         console.error('error', error)
+        if (dwollaCustomerId) {
+            try {
+                // Menonaktifkan customer Dwolla yang terkait
+                await deactivateDwollaCustomer({
+                    ...userData,
+                    type: 'personal'
+                });
+                console.log('Dwolla customer deactivated due to error');
+            } catch (deactivationError) {
+                console.error('Error deactivating Dwolla customer:', deactivationError);
+            }
+        }
     }
 }
 
@@ -96,7 +115,7 @@ export async function getLoggedInUser() {
     try {
         const { account } = await createSessionClient();
         const result = await account.get();
-        const user = await getUserInfo({userId: result.$id});
+        const user = await getUserInfo({ userId: result.$id });
         return parseStringify(user);
     } catch (error) {
         return null;
@@ -238,7 +257,7 @@ export const getBanks = async ({ userId }: getBanksProps) => {
     }
 }
 
-export const getBankByAccountId = async({ accountId }: getBankByAccountIdProps) => { 
+export const getBankByAccountId = async ({ accountId }: getBankByAccountIdProps) => {
     try {
         const { database } = await createAdminClient();
         const bank = await database.listDocuments(

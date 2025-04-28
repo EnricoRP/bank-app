@@ -63,6 +63,42 @@ export const createDwollaCustomer = async (
   }
 };
 
+export const deactivateDwollaCustomer = async (
+  { email }: NewDwollaCustomerParams
+) => {
+  try {
+    // Mengambil ID customer berdasarkan email
+    const idCustomer = await dwollaClient
+      .get("customers", { email: email })
+      .then((res) => {
+        if (res.body._embedded && res.body._embedded.customers.length > 0) {
+          return res.body._embedded.customers[0].id; // Ambil ID customer pertama
+        } else {
+          throw new Error('Customer not found');
+        }
+      });
+
+    // Data untuk menonaktifkan customer
+    const customerData = {
+      status: "deactivated" // Status yang benar adalah "deactivated"
+    };
+
+    // Mengirimkan request POST untuk menonaktifkan customer
+    const response = await dwollaClient.post(`customers/${idCustomer}`, customerData);
+
+    // Periksa status response
+    if (response.status === 200) {
+      return response.headers.get("location"); // Lokasi resource yang baru jika berhasil
+    } else {
+      throw new Error('Failed to deactivate customer');
+    }
+  } catch (error) {
+    console.error("Error deactivating Dwolla customer:", error);
+    throw error; // Rethrow error agar bisa ditangani di tingkat yang lebih tinggi
+  }
+};
+
+
 export const createTransfer = async ({
   sourceFundingSourceUrl,
   destinationFundingSourceUrl,
