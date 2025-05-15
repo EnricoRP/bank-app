@@ -312,3 +312,37 @@ Hal ini digunakan untuk tujuan type safety, Sehingga control dan name akan otoma
 ##
 # 
 
+
+
+                memoDetail.Barcode = "745125242460"
+                memoDetail.Kode_Memo = invTransfer.inventory_transfer_id
+                memoDetail.Type_Memo = NullToStr(TxtTipeMemo.EditValue)
+                memoDetail.Kode_Satuan = detail.uom_id
+                memoDetail.Qty = detail.qty
+                memoDetail.Konversi = If(Decimal.TryParse(detail.qty2, Nothing), Decimal.Parse(detail.qty2), 1)
+                memoDetail.Harga = If(Decimal.TryParse(detail.price, Nothing), Decimal.Parse(detail.price), 1)
+                memoDetail.Jumlah = detail.hpp_price
+                memoDetail.Keterangan = If(String.IsNullOrEmpty(detail.notes), "-", detail.notes)
+                memoDetail.Create_User = detail.user_record
+                memoDetail.Dt_Create = detail.dt_record
+                memoDetail.Change_User = If(String.IsNullOrEmpty(detail.user_modified), "-", detail.user_modified)
+                memoDetail.Dt_Change = detail.dt_modified
+                memoDetail.RowGuid = Guid.NewGuid()
+                memoDetail.Qty_Colly = 0
+                memoDetail.Konversi_Colly = 1
+                memoDetail.Satuan_Colly = ""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

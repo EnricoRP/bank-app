@@ -8,7 +8,8 @@ export const BankTabItem = ({ account, appwriteItemId }: BankTabItemProps) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const isActive = appwriteItemId === account?.appwriteItemId;
-
+  console.log("appwriteItemId: ", appwriteItemId);
+  console.log("account: ",account?.appwriteItemId)
   const handleBankChange = () => {
     const newUrl = formUrlQuery({
       params: searchParams.toString(),
